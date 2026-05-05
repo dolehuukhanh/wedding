@@ -4,7 +4,7 @@
     'use strict';
 
     // ===== CONFIG =====
-    const WEDDING_DATE = new Date('2026-06-05T09:00:00+07:00');
+    const WEDDING_DATE = new Date('2026-06-09T09:00:00+07:00');
 
     // ===== SMOOTH SCROLL =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
