@@ -1789,7 +1789,7 @@ ul {
 }
 
 .family-luxury__heart {
-    color: var(--color-primary);
+    color: #e74c3c;
     animation: heartBeat 2s infinite;
 }
 
@@ -2368,7 +2368,7 @@ ul {
 
 /* ===== GUESTBOOK CREDITS STYLE ===== */
 .guestbook__credits-container {
-    max-width: 800px;
+    max-width: 650px;
     margin: 50px auto 0;
     height: 500px;
     background: linear-gradient(180deg, #fff5f7 0%, #ffe8f0 50%, #ffd7e6 100%);
@@ -2429,11 +2429,7 @@ ul {
 
 .guestbook__credits-name {
     font-family: var(--font-serif);
-<<<<<<< HEAD
     font-size: 2.4rem;
-=======
-    font-size: 1.8rem;
->>>>>>> b248421d6393fcf6063a014e161dfb4d429fb9d1
     font-weight: 600;
     color: #8b2e3e;
     margin-bottom: 16px;
@@ -2442,17 +2438,10 @@ ul {
 
 .guestbook__credits-msg {
     font-family: var(--font-sans);
-<<<<<<< HEAD
     font-size: 1.4rem;
     color: #5a1f2f;
     line-height: 1.8;
-    max-width: 700px;
-=======
-    font-size: 1.1rem;
-    color: #5a1f2f;
-    line-height: 1.8;
     max-width: 600px;
->>>>>>> b248421d6393fcf6063a014e161dfb4d429fb9d1
     margin: 0 auto 12px;
     font-style: italic;
 }
