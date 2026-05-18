@@ -6,6 +6,108 @@
     // ===== CONFIG =====
     const WEDDING_DATE = new Date('2026-06-09T09:00:00+07:00');
 
+    // ===== INTRO SCREEN - NEW SEQUENCE =====
+    const introScreen = document.getElementById('introScreen');
+    const introClouds = document.getElementById('introClouds');
+    const doorContainer = document.querySelector('.door-container');
+    const envelopeWrapper = document.getElementById('envelopeWrapper');
+    const envelope = document.getElementById('envelope');
+    const mainContent = document.getElementById('mainContent');
+
+    // Auto-play intro sequence with realistic clouds
+    function startIntroSequence() {
+        // Step 1: After 1.1s, clouds start to open (slower, more dramatic)
+        setTimeout(() => {
+            introClouds.classList.add('open');
+            if (doorContainer) {
+                doorContainer.classList.add('open');
+            }
+        }, 1100);
+        
+        // Envelope sẽ hiển thị và chờ user click - KHÔNG tự động ẩn
+    }
+
+    // Start intro sequence on page load
+    startIntroSequence();
+
+    // Handle envelope click/touch to open and show main content
+    if (envelope) {
+        const openEnvelope = () => {
+            // Prevent multiple clicks
+            if (envelope.classList.contains('opening')) return;
+            
+            // Add opening class to trigger envelope opening animation
+            envelope.classList.add('opening');
+
+            // After envelope opens, transition to main content
+            setTimeout(() => {
+                introScreen.classList.add('hidden');
+                mainContent.style.display = 'block';
+
+                // Trigger main content fade in
+                setTimeout(() => {
+                    mainContent.classList.add('visible');
+                }, 50);
+            }, 1200);
+        };
+
+        // Support both click and touch events
+        envelope.addEventListener('click', openEnvelope);
+        envelope.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            openEnvelope();
+        });
+    }
+
+    // Create falling stars and sakura petals effect (only on intro screen)
+    function createPetal() {
+        if (introScreen && !introScreen.classList.contains('hidden')) {
+            const petal = document.createElement("span");
+            
+            // Randomly choose between star and sakura (50/50)
+            const isStar = Math.random() > 0.5;
+            petal.className = isStar ? "petal star" : "petal sakura";
+            
+            petal.style.left = Math.random() * 100 + "vw";
+            petal.style.animationDuration = Math.random() * 4 + 6 + "s";
+            petal.style.opacity = Math.random() * 0.4 + 0.5;
+            petal.style.setProperty("--drift", (Math.random() * 200 - 100) + "px");
+            petal.style.setProperty("--rotation", (Math.random() * 360 + 360) + "deg");
+            
+            // Random colors for stars and sakura
+            if (isStar) {
+                const starColors = [
+                    'rgba(255,215,0,.85)',
+                    'rgba(255,255,255,.9)',
+                    'rgba(255,192,203,.85)',
+                    'rgba(173,216,230,.85)'
+                ];
+                const color = starColors[Math.floor(Math.random() * starColors.length)];
+                petal.style.setProperty("--petal-color", color);
+            } else {
+                const sakuraColors = [
+                    'rgba(255,182,193,.85)',
+                    'rgba(255,192,203,.9)',
+                    'rgba(255,228,225,.85)',
+                    'rgba(255,240,245,.9)'
+                ];
+                const color = sakuraColors[Math.floor(Math.random() * sakuraColors.length)];
+                petal.style.setProperty("--petal-color", color);
+            }
+            
+            introScreen.appendChild(petal);
+
+            setTimeout(() => {
+                petal.remove();
+            }, 10500);
+        }
+    }
+
+    // Start petal animations after clouds open
+    setTimeout(() => {
+        setInterval(createPetal, 350);
+    }, 1100);
+
     // ===== SMOOTH SCROLL =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', e => {
@@ -153,38 +255,125 @@
         document.getElementById('rsvpSuccess').style.display = 'block';
     });
 
-    // ===== GUESTBOOK =====
-    const guestbookList = document.getElementById('guestbookList');
-    function renderWishes() {
+    // ===== MOBILE GALLERY SLIDER =====
+    const galleryMobileSlider = document.getElementById('galleryMobileSlider');
+    const galleryMainImg = document.getElementById('galleryMainImg');
+    const galleryThumbnails = document.querySelectorAll('.gallery__thumb');
+    let currentGalleryIndex = 0;
+    let galleryAutoSlideInterval;
+
+    // Click main image to open lightbox
+    if (galleryMainImg) {
+        galleryMainImg.addEventListener('click', () => {
+            lightboxImg.src = galleryMainImg.src;
+            lightbox.classList.add('active');
+        });
+    }
+
+    // Click thumbnail to change main image
+    galleryThumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default behavior
+            currentGalleryIndex = index;
+            updateGalleryImage();
+            resetGalleryAutoSlide();
+        });
+    });
+
+    function updateGalleryImage() {
+        const newSrc = galleryThumbnails[currentGalleryIndex].dataset.src;
+        galleryMainImg.style.opacity = '0.5';
+        
+        setTimeout(() => {
+            galleryMainImg.src = newSrc;
+            galleryMainImg.style.opacity = '1';
+        }, 250);
+
+        // Update active thumbnail
+        galleryThumbnails.forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === currentGalleryIndex);
+        });
+
+        // Scroll thumbnail into view WITHOUT scrolling the page
+        const thumbnailsContainer = document.getElementById('galleryThumbnails');
+        const activeThumb = galleryThumbnails[currentGalleryIndex];
+        
+        if (thumbnailsContainer && activeThumb) {
+            const containerRect = thumbnailsContainer.getBoundingClientRect();
+            const thumbRect = activeThumb.getBoundingClientRect();
+            const scrollLeft = activeThumb.offsetLeft - (containerRect.width / 2) + (thumbRect.width / 2);
+            
+            thumbnailsContainer.scrollTo({
+                left: scrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function nextGalleryImage() {
+        currentGalleryIndex = (currentGalleryIndex + 1) % galleryThumbnails.length;
+        updateGalleryImage();
+    }
+
+    function startGalleryAutoSlide() {
+        galleryAutoSlideInterval = setInterval(nextGalleryImage, 5000);
+    }
+
+    function resetGalleryAutoSlide() {
+        clearInterval(galleryAutoSlideInterval);
+        startGalleryAutoSlide();
+    }
+
+    // Start auto-slide if mobile slider is visible
+    if (galleryMobileSlider && window.innerWidth <= 768) {
+        startGalleryAutoSlide();
+    }
+
+    // ===== GUESTBOOK CREDITS =====
+    const guestbookCredits = document.getElementById('guestbookCredits');
+    
+    function renderWishesCredits() {
         const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
-        guestbookList.innerHTML = wishes.map(w => `
-            <div class="guestbook__wish">
-                <p class="guestbook__wish-name">${escapeHtml(w.name)}</p>
-                <p class="guestbook__wish-msg">${escapeHtml(w.msg)}</p>
-                <p class="guestbook__wish-time">${w.time}</p>
+        guestbookCredits.innerHTML = wishes.map(w => `
+            <div class="guestbook__credits-item">
+                <p class="guestbook__credits-name">${escapeHtml(w.name)}</p>
+                <p class="guestbook__credits-msg">${escapeHtml(w.msg)}</p>
+                <div class="guestbook__credits-divider"></div>
             </div>
         `).join('');
+
+        // Adjust animation duration based on content length
+        const itemCount = wishes.length;
+        const duration = Math.max(30, itemCount * 10); // 10s per wish, min 30s
+        guestbookCredits.style.animationDuration = `${duration}s`;
     }
+
     function escapeHtml(str) {
         const d = document.createElement('div');
         d.textContent = str;
         return d.innerHTML;
     }
-    // Xoá hết lời chúc cũ (bỏ dòng này sau khi đã xoá xong)
-    localStorage.removeItem('wedding_wishes');
-    renderWishes();
+
+    // Initialize wishes
+    renderWishesCredits();
 
     document.getElementById('guestbookForm').addEventListener('submit', e => {
         e.preventDefault();
         const name = document.getElementById('wishName').value.trim();
         const msg = document.getElementById('wishMessage').value.trim();
         if (!name || !msg) return;
+        
         sendToSheet({ type: 'wish', name, message: msg, attend: '', side: '', guests: '' });
+        
         const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
-        wishes.unshift({ name, msg, time: new Date().toLocaleString('vi-VN') });
+        wishes.unshift({ name, msg });
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
-        renderWishes();
+        
+        renderWishesCredits();
         e.target.reset();
+
+        // Show success message
+        alert('Cảm ơn lời chúc của bạn! ❤️');
     });
 
     // ===== MUSIC PLAYLIST =====
@@ -195,7 +384,7 @@
 
     // Playlist nhạc đám cưới
     const playlist = [
-        'music/cuoithoi.mp3'
+        'music/AThousandYears.mp3'
     ];
 
     function loadTrack(index) {
@@ -278,11 +467,11 @@
         musicPlaying = !musicPlaying;
     });
 
-    // ===== FALLING PETALS =====
+    // ===== FALLING SPARKLES & HEARTS =====
     const canvas = document.getElementById('petalCanvas');
     const ctx = canvas.getContext('2d');
-    let petals = [];
-    const PETAL_COUNT = 25;
+    let particles = [];
+    const PARTICLE_COUNT = 80; // Tăng số lượng
 
     function resizeCanvas() {
         canvas.width = window.innerWidth;
@@ -291,47 +480,107 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    class Petal {
-        constructor() { this.reset(true); }
+    class Particle {
+        constructor(type) {
+            this.type = type || (Math.random() > 0.3 ? 'star' : 'heart'); // 70% sao, 30% trái tim
+            this.reset(true);
+        }
         reset(init) {
             this.x = Math.random() * canvas.width;
-            this.y = init ? Math.random() * canvas.height * -1 : -20;
-            this.size = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 1 + 0.5;
+            this.y = init ? Math.random() * canvas.height * -1 : -30;
+            this.size = Math.random() * 8 + 5;
+            this.speedY = Math.random() * 1.2 + 0.5; // Chậm hơn
             this.speedX = Math.random() * 0.8 - 0.4;
+            this.opacity = Math.random() * 0.7 + 0.3;
+            this.color = ['#d4a5a5', '#e8c5c5', '#f5d5d5', '#fce8eb', '#ffb3d9'][Math.floor(Math.random() * 5)];
+            this.twinkle = Math.random() * Math.PI * 2;
+            this.twinkleSpeed = Math.random() * 0.05 + 0.02;
             this.rotation = Math.random() * Math.PI * 2;
-            this.rotSpeed = (Math.random() - 0.5) * 0.02;
-            this.opacity = Math.random() * 0.4 + 0.2;
-            this.color = ['#f4c2c2', '#e8b4b8', '#f7d6d0', '#fce4ec'][Math.floor(Math.random() * 4)];
+            this.rotationSpeed = (Math.random() - 0.5) * 0.03;
         }
         update() {
             this.y += this.speedY;
-            this.x += this.speedX + Math.sin(this.y * 0.01) * 0.3;
-            this.rotation += this.rotSpeed;
-            if (this.y > canvas.height + 20) this.reset(false);
+            this.x += this.speedX + Math.sin(this.y * 0.02) * 0.8;
+            this.twinkle += this.twinkleSpeed;
+            this.rotation += this.rotationSpeed;
+            if (this.y > canvas.height + 30) this.reset(false);
         }
         draw() {
             ctx.save();
             ctx.translate(this.x, this.y);
             ctx.rotate(this.rotation);
-            ctx.globalAlpha = this.opacity;
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            // Simple petal shape
-            ctx.ellipse(0, 0, this.size * 0.5, this.size, 0, 0, Math.PI * 2);
-            ctx.fill();
+            
+            // Twinkling effect
+            const twinkleOpacity = this.opacity * (0.5 + Math.sin(this.twinkle) * 0.5);
+            ctx.globalAlpha = twinkleOpacity;
+            
+            if (this.type === 'star') {
+                // Draw sparkle/star shape
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 4 * Math.PI) / 5;
+                    const x = Math.cos(angle) * this.size;
+                    const y = Math.sin(angle) * this.size;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fill();
+                
+                // Add glow effect
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+            } else {
+                // Draw heart shape
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(0, topCurveHeight);
+                // Left side
+                ctx.bezierCurveTo(
+                    0, 0,
+                    -this.size / 2, 0,
+                    -this.size / 2, topCurveHeight
+                );
+                ctx.bezierCurveTo(
+                    -this.size / 2, (topCurveHeight + this.size) / 2,
+                    0, (topCurveHeight + this.size) / 1.5,
+                    0, this.size
+                );
+                // Right side
+                ctx.bezierCurveTo(
+                    0, (topCurveHeight + this.size) / 1.5,
+                    this.size / 2, (topCurveHeight + this.size) / 2,
+                    this.size / 2, topCurveHeight
+                );
+                ctx.bezierCurveTo(
+                    this.size / 2, 0,
+                    0, 0,
+                    0, topCurveHeight
+                );
+                ctx.closePath();
+                ctx.fill();
+                
+                // Add glow effect
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+            }
+            
             ctx.restore();
         }
     }
 
-    for (let i = 0; i < PETAL_COUNT; i++) petals.push(new Petal());
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
-    function animatePetals() {
+    function animateParticles() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        petals.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animatePetals);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
     }
-    animatePetals();
+    animateParticles();
 
 })();
 

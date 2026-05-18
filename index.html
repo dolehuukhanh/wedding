@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Hữu Khanh & Phan Hà Quỳnh Diễm - Wedding Invitation</title>
+    <title>Khanh & Diễm - Wedding</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23d4a5a5' d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,25 +13,70 @@
     <!-- Background Music -->
     <audio id="bgMusic" src="music/cuoithoi.mp3" autoplay loop preload="auto"></audio>
     <button class="music-toggle" id="musicToggle" aria-label="Toggle music">♪</button>
-    <audio id="bgMusic" src="music/cuoithoi.mp3" loop preload="auto"></audio>
 
-<script>
-const music = document.getElementById("bgMusic");
-
-// thử autoplay khi load
-window.addEventListener("load", () => {
-    music.play().catch(() => {
-        // nếu bị chặn → chờ user click
-        document.addEventListener("click", () => {
-            music.play();
-        }, { once: true });
-    });
-});
-</script>
     <!-- Petal Effect Canvas -->
     <canvas id="petalCanvas"></canvas>
 
-    <!-- Navigation -->
+    <!-- ===== INTRO SCREEN - REALISTIC CLOUDS & ENVELOPE ===== -->
+    <div class="intro-screen" id="introScreen">
+        <!-- Intro Title -->
+        <div class="intro-title">Wedding Invitation</div>
+
+        <!-- Double Doors with 囍 Pattern (Horizontal Style) -->
+        <div class="door-container">
+            <div class="door door-left">
+                <div class="door-xi-circle">
+                    <div class="door-xi-half">囍</div>
+                </div>
+            </div>
+            <div class="door door-right">
+                <div class="door-xi-circle">
+                    <div class="door-xi-half">囍</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Realistic Clouds -->
+        <div class="intro-clouds" id="introClouds">
+            <div class="cloud cloud-left">
+                <span class="real-cloud c1"></span>
+                <span class="real-cloud c2"></span>
+                <span class="real-cloud c3"></span>
+                <span class="real-cloud c4"></span>
+                <span class="real-cloud c5"></span>
+                <span class="real-cloud c6"></span>
+                <span class="real-cloud c7"></span>
+                <span class="real-cloud c8"></span>
+            </div>
+            <div class="cloud cloud-right">
+                <span class="real-cloud c1"></span>
+                <span class="real-cloud c2"></span>
+                <span class="real-cloud c3"></span>
+                <span class="real-cloud c4"></span>
+                <span class="real-cloud c5"></span>
+                <span class="real-cloud c6"></span>
+                <span class="real-cloud c7"></span>
+                <span class="real-cloud c8"></span>
+            </div>
+        </div>
+
+        <!-- Envelope Invitation -->
+        <div class="envelope-wrapper" id="envelopeWrapper">
+            <p class="open-hint">Nhấn để mở thiệp</p>
+            
+            <div class="envelope" id="envelope" aria-label="Thiệp cưới">
+                <div class="envelope__body"></div>
+                <div class="envelope__flap"></div>
+                <div class="envelope__wax-seal">
+                    <div class="wax-seal">
+                        <span class="wax-seal__stamp">❤</span>
+                    </div>
+                </div>
+                <div class="envelope__label">Hữu Khanh & Quỳnh Diễm</div>
+            </div>
+        </div>
+    </div>
+
     <nav class="nav" id="nav">
         <ul>
             <li><a href="#hero">Trang chủ</a></li>
@@ -49,7 +95,7 @@ window.addEventListener("load", () => {
             <h1 class="hero__names">
                 <span class="hero__name">Đỗ Lê Hữu Khanh</span>
                 <span class="hero__amp">&</span>
-                <span class="hero__name">Phan Hà Quỳnh Diễm</span>
+                <span class="hero__name">Phan Thị Quỳnh Diễm</span>
             </h1>
             <div class="hero__date">
                 <span class="hero__divider"></span>
@@ -74,16 +120,16 @@ window.addEventListener("load", () => {
             <div class="couple__grid">
                 <div class="couple__card reveal reveal--left">
                     <div class="couple__photo">
-                        <img src="images/khanh.jpg" alt="Chú rể" class="couple__img">
+                        <img src="images/8.jpg" alt="Chú rể" class="couple__img">
                     </div>
-                    <h3 class="couple__name">Hữu Khanh</h3>
+                    <h3 class="couple__name">Đỗ Lê Hữu Khanh</h3>
                     <p class="couple__role">Chú Rể</p>
                 </div>
                 <div class="couple__card reveal reveal--right">
                     <div class="couple__photo">
                         <img src="images/26.jpg" alt="Cô dâu" class="couple__img">
                     </div>
-                    <h3 class="couple__name">Quỳnh Diễm</h3>
+                    <h3 class="couple__name">Phan Thị Quỳnh Diễm</h3>
                     <p class="couple__role">Cô Dâu</p>
                 </div>
             </div>
@@ -98,24 +144,71 @@ window.addEventListener("load", () => {
                 <h2 class="section__title">Album Ảnh Cưới</h2>
                 <div class="section__ornament"></div>
             </div>
+            
+            <!-- Mobile Gallery Slider -->
+            <div class="gallery__mobile-slider reveal" id="galleryMobileSlider">
+                <div class="gallery__main-image">
+                    <img src="images/3.JPG" alt="Wedding photo" id="galleryMainImg">
+                </div>
+                <div class="gallery__thumbnails" id="galleryThumbnails">
+                    <div class="gallery__thumb active" data-src="images/3.JPG">
+                        <img src="images/3.JPG" alt="Photo 1">
+                    </div>
+                    <div class="gallery__thumb" data-src="images/4.JPG">
+                        <img src="images/4.JPG" alt="Photo 2">
+                    </div>
+                    <div class="gallery__thumb" data-src="images/5.JPG">
+                        <img src="images/5.JPG" alt="Photo 3">
+                    </div>
+                    <div class="gallery__thumb" data-src="images/6.JPG">
+                        <img src="images/6.JPG" alt="Photo 4">
+                    </div>
+                    <div class="gallery__thumb" data-src="images/7.JPG">
+                        <img src="images/7.JPG" alt="Photo 5">
+                    </div>
+                    <div class="gallery__thumb" data-src="images/13.jpg">
+                        <img src="images/13.jpg" alt="Photo 6">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Gallery Grid -->
             <div class="gallery__grid reveal">
                 <div class="gallery__item" data-src="images/3.JPG">
                     <img src="images/3.JPG" alt="Wedding photo 1">
+                    <div class="gallery__overlay">
+                        <span class="gallery__icon">🔍</span>
+                    </div>
                 </div>
                 <div class="gallery__item" data-src="images/4.JPG">
                     <img src="images/4.JPG" alt="Wedding photo 2">
+                    <div class="gallery__overlay">
+                        <span class="gallery__icon">🔍</span>
+                    </div>
                 </div>
                 <div class="gallery__item" data-src="images/5.JPG">
                     <img src="images/5.JPG" alt="Wedding photo 3">
+                    <div class="gallery__overlay">
+                        <span class="gallery__icon">🔍</span>
+                    </div>
                 </div>
                 <div class="gallery__item" data-src="images/6.JPG">
                     <img src="images/6.JPG" alt="Wedding photo 4">
+                    <div class="gallery__overlay">
+                        <span class="gallery__icon">🔍</span>
+                    </div>
                 </div>
                 <div class="gallery__item" data-src="images/7.JPG">
                     <img src="images/7.JPG" alt="Wedding photo 5">
+                    <div class="gallery__overlay">
+                        <span class="gallery__icon">🔍</span>
+                    </div>
                 </div>
                 <div class="gallery__item" data-src="images/13.jpg">
                     <img src="images/13.jpg" alt="Wedding photo 6">
+                    <div class="gallery__overlay">
+                        <span class="gallery__icon">🔍</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,7 +238,7 @@ window.addEventListener("load", () => {
                     <p class="family-luxury__parents">Ông <strong>Đỗ Hữu Vệ</strong></p>
                     <p class="family-luxury__parents">Bà <strong>Lê Thị Thúy</strong></p>
                     <div class="family-luxury__divider"></div>
-                    <p class="family-luxury__rank">Trưởng Nam</p>
+                    <p class="family-luxury__rank">Quý Nam</p>
                     <h3 class="family-luxury__name">Đỗ Lê Hữu Khanh</h3>
                 </div>
 
@@ -162,40 +255,59 @@ window.addEventListener("load", () => {
                 <div class="family-luxury__side">
                     <p class="family-luxury__label">Nhà Gái</p>
                     <p class="family-luxury__parents">Ông <strong>Phan Thanh Quang</strong></p>
-                    <p class="family-luxury__parents">Bà <strong>Hà Thị Thanh Hồng</strong></p>
+                    <p class="family-luxury__parents">Bà <strong>Hà Thị Hồng Thanh</strong></p>
                     <div class="family-luxury__divider"></div>
                     <p class="family-luxury__rank">Thứ Nữ</p>
-                    <h3 class="family-luxury__name">Phan Hà Quỳnh Diễm</h3>
+                    <h3 class="family-luxury__name">Phan Thị Quỳnh Diễm</h3>
                 </div>
             </div>
 
             <!-- Ceremony details -->
-            <div class="event-details reveal">
-                <div class="event-detail">
-                    <div class="event-detail__icon">💒</div>
-                    <div class="event-detail__info">
-                        <h3 class="event-detail__title">Lễ Tân Hôn</h3>
-                        <p class="event-detail__meta">09:00 · Thứ Sáu, 09 Tháng 06, 2026</p>
-                        <p class="event-detail__place">Tư gia nam — Thôn Phú Khương, Xã Hành Tín, Tỉnh Quảng Ngãi</p>
+            <div class="event-card-full reveal">
+                <div class="event-card-full__header">
+                    <div class="event-card-full__icon">🥂</div>
+                    <h3 class="event-card-full__title">Tiệc Cưới</h3>
+                </div>
+                <div class="event-card-full__divider"></div>
+                
+                <div class="event-card-full__timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-item__time">08:00</div>
+                        <div class="timeline-item__content">
+                            <h4>Lễ Thân Hôn</h4>
+                            <p>Lê tân hôn sẽ chính chức bắt đầu</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item__time">10:00</div>
+                        <div class="timeline-item__content">
+                            <h4>Mời Khách Vào</h4>
+                            <p>Tiệc cưới chính thức bắt đầu tại tư gia nam</p>
+                        </div>
                     </div>
                 </div>
-                <div class="event-detail__separator"></div>
-                <div class="event-detail">
-                    <div class="event-detail__icon">🥂</div>
-                    <div class="event-detail__info">
-                        <h3 class="event-detail__title">Tiệc Cưới</h3>
-                        <p class="event-detail__meta">10:00 · Thứ Sáu, 09 Tháng 06, 2026</p>
-                        <p class="event-detail__place">Tư gia nam — Thôn Phú Khương, Xã Hành Tín, Tỉnh Quảng Ngãi</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="event__map reveal">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d240.97096575418703!2d108.76580258259897!3d14.907232547766423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1776788478620!5m2!1svi!2s"
-                    width="100%" height="350" style="border:0; border-radius: 12px;"
-                    allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+                <div class="event-card-full__info">
+                    <div class="event-card-full__date">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                        </svg>
+                        <span>Thứ Ba, 09 Tháng 06, 2026</span>
+                    </div>
+                    <div class="event-card-full__location">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <span>Tư gia nam — Thôn Phú Khương, Xã Hành Tín, Tỉnh Quảng Ngãi</span>
+                    </div>
+                </div>
+
+                <a href="https://www.google.com/maps?q=14.90707359590499,108.76555355456163" target="_blank" class="event-card-full__map-btn">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span>Xem Bản Đồ</span>
+                </a>
             </div>
         </div>
     </section>
@@ -248,6 +360,7 @@ window.addEventListener("load", () => {
                     </div>
                     <p class="qr-section__name">DO LE HUU KHANH</p>
                     <p class="qr-section__bank">MOMO</p>
+                    <p class="qr-section__acc">096 9173 413</p>
                 </div>
             </div>
         </div>
@@ -332,18 +445,23 @@ window.addEventListener("load", () => {
                 </div>
                 <button type="submit" class="rsvp__btn">Gửi Lời Chúc</button>
             </form>
-            <div class="guestbook__list" id="guestbookList"></div>
+            
+            <!-- Scrolling Credits Style -->
+            <div class="guestbook__credits-container reveal">
+                <div class="guestbook__credits" id="guestbookCredits"></div>
+            </div>
         </div>
     </section>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
-            <p class="footer__names"><span class="footer__name">Hữu&nbsp;Khanh</span> <span class="footer__amp">&amp;</span> <span class="footer__name">Quỳnh&nbsp;Diễm</span></p>
+            <p class="footer__names"><span class="footer__name">Đỗ&nbsp;Lê&nbsp;Hữu&nbsp;Khanh</span> <span class="footer__amp">&amp;</span> <span class="footer__name">Phan&nbsp;Thị&nbsp;Quỳnh&nbsp;Diễm</span></p>
             <p class="footer__date">09 . 06 . 2026</p>
-            <p class="footer__thanks">Cảm ơn bạn đã ghé thăm thiệp cưới của chúng mình ♥</p>
-        </div>
     </footer>
+
+    </div>
+    <!-- End Main Content -->
 
     <script src="script.js"></script>
 </body>
