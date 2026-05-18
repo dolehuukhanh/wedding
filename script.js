@@ -192,10 +192,11 @@
     });
 
     // ===== GOOGLE SHEETS CONFIG =====
-    // Hướng dẫn: Tạo Google Apps Script Web App để nhận dữ liệu
+    // Hướng dẫn: Tạo Google Apps Script Web App để nhận và đọc dữ liệu
     // 1. Mở Google Sheets → Extensions → Apps Script
     // 2. Paste đoạn code bên dưới vào Apps Script, Deploy as Web App
-    // 3. Thay URL bên dưới bằng URL Web App của bạn
+    // 3. Khi Deploy, chọn "Anyone" có thể truy cập
+    // 4. Thay URL bên dưới bằng URL Web App của bạn
     /*
     // === Google Apps Script Code (paste vào Apps Script) ===
     function doPost(e) {
@@ -220,7 +221,36 @@
     }
 
     function doGet(e) {
-      return doPost(e);
+      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      var action = e.parameter.action;
+      
+      if (action === 'getWishes') {
+        var data = sheet.getDataRange().getValues();
+        var wishes = [];
+        
+        // Bỏ qua dòng header (dòng 1)
+        for (var i = 1; i < data.length; i++) {
+          var row = data[i];
+          // Chỉ lấy những dòng có type = 'wish'
+          if (row[1] === 'wish' && row[2] && row[6]) {
+            wishes.push({
+              name: row[2],
+              msg: row[6]
+            });
+          }
+        }
+        
+        // Đảo ngược để lời chúc mới nhất lên đầu
+        wishes.reverse();
+        
+        return ContentService.createTextOutput(JSON.stringify({
+          status: 'ok',
+          wishes: wishes
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+        .setMimeType(ContentService.MimeType.JSON);
     }
     */
     const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxrSJyldPqtIqNWBIMHqBEnXdXIwqdg1kgB9KZ_Rq62QpLRfOaTDQFtmc5sGv0Iznhl/exec';
@@ -235,6 +265,30 @@
             mode: 'no-cors',
             body: JSON.stringify(data)
         }).catch(err => console.warn('Sheet error:', err));
+    }
+
+    // Load lời chúc từ Google Sheets
+    async function loadWishesFromSheet() {
+        if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
+            console.log('[Sheet] Chưa cấu hình URL để load wishes');
+            return;
+        }
+        
+        try {
+            const response = await fetch(GOOGLE_SHEET_URL + '?action=getWishes');
+            const result = await response.json();
+            
+            if (result.status === 'ok' && result.wishes) {
+                // Lưu vào localStorage để cache
+                localStorage.setItem('wedding_wishes', JSON.stringify(result.wishes));
+                renderWishesCredits();
+                console.log('[Sheet] Đã load', result.wishes.length, 'lời chúc từ Google Sheets');
+            }
+        } catch (err) {
+            console.warn('[Sheet] Không thể load wishes:', err);
+            // Fallback: dùng localStorage nếu có
+            renderWishesCredits();
+        }
     }
 
     // ===== RSVP FORM =====
@@ -354,8 +408,8 @@
         return d.innerHTML;
     }
 
-    // Initialize wishes
-    renderWishesCredits();
+    // Initialize wishes - Load từ Google Sheets khi trang load
+    loadWishesFromSheet();
 
     document.getElementById('guestbookForm').addEventListener('submit', e => {
         e.preventDefault();
@@ -363,8 +417,10 @@
         const msg = document.getElementById('wishMessage').value.trim();
         if (!name || !msg) return;
         
+        // Gửi lên Google Sheets
         sendToSheet({ type: 'wish', name, message: msg, attend: '', side: '', guests: '' });
         
+        // Cập nhật localStorage ngay lập tức để hiển thị
         const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
         wishes.unshift({ name, msg });
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
@@ -374,6 +430,11 @@
 
         // Show success message
         alert('Cảm ơn lời chúc của bạn! ❤️');
+        
+        // Reload lại từ Sheets sau 2 giây để đồng bộ
+        setTimeout(() => {
+            loadWishesFromSheet();
+        }, 2000);
     });
 
     // ===== MUSIC PLAYLIST =====
